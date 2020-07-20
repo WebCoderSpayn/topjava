@@ -12,4 +12,8 @@
     <import resource="spring-cache.xml"/>
 
     <context:component-scan base-package="ru.javawebinar.**.service"/>
+
+    <bean id="validationFactory" class="javax.validation.Validation" factory-method="buildDefaultValidatorFactory" />
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+    <bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"/>
 </beans>
