@@ -4,9 +4,11 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.context.ContextConfiguration;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.JpaUtil;
@@ -19,13 +21,13 @@ import java.util.Set;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
-
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Autowired
     protected UserService service;
 
     @Autowired(required = false)
+    @Qualifier("noOpCacheManager")
     private CacheManager cacheManager;
 
     @Autowired(required = false)
@@ -36,6 +38,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         if (jpaUtil != null) {
             cacheManager.getCache("users").clear();
             jpaUtil.clear2ndLevelHibernateCache();
+
         }
     }
 
