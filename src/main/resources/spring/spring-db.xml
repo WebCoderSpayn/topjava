@@ -5,13 +5,14 @@
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:jee="http://www.springframework.org/schema/jee" xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
-       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
 
     <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
         <jdbc:script location="${jdbc.initLocation}"/>
@@ -50,6 +51,10 @@
               p:url="${database.url}"
               p:username="${database.username}"
               p:password="${database.password}"/>
+
+<!--        <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">-->
+<!--            <property name="location" value="classpath:beanOverride.properties" />-->
+<!--        </bean>-->
     </beans>
 
     <beans profile="tomcat">
@@ -104,7 +109,14 @@
                 <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" p:showSql="${jpa.showSql}">
                 </bean>
             </property>
+
         </bean>
+
+        <cache:annotation-driven cache-manager="noOpCacheManager"/>
+
+        <bean id="noOpCacheManager" class="org.springframework.cache.support.NoOpCacheManager" />
+
+        <context:property-override location="classpath:beanOverride.properties"/>
 
         <tx:annotation-driven/>
 
