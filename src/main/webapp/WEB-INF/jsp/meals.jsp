@@ -4,10 +4,16 @@
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
+
 <body>
+
+<script type="text/javascript" src="resources/js/topjava.common.js" defer></script>
+<script type="text/javascript" src="resources/js/topjava.meals.js" defer></script>
+
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
-<section>
+<div class="jumbotron">
+<section class="container">
     <h3><spring:message code="meal.title"/></h3>
 
     <form method="get" action="meals/filter">
@@ -29,10 +35,17 @@
         </dl>
         <button type="submit"><spring:message code="meal.filter"/></button>
     </form>
-    <hr>
-    <a href="meals/create"><spring:message code="meal.add"/></a>
-    <hr>
-    <table border="1" cellpadding="8" cellspacing="0">
+<%--    <hr>--%>
+<%--    <a href="meals/create"><spring:message code="meal.add"/></a>--%>
+<%--    <hr>--%>
+    <div class="py-4">
+        <button class="btn btn-primary" onclick="add()">
+            <span class="fa fa-plus"></span>
+            <spring:message code="common.add"/>
+        </button>
+    </div>
+
+    <table class="table table-striped" cellpadding="8" cellspacing="0" id="datatable">
         <thead>
         <tr>
             <th><spring:message code="meal.dateTime"/></th>
@@ -53,12 +66,18 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>
-                <td><a href="meals/delete?id=${meal.id}"><spring:message code="common.delete"/></a></td>
+                <td><a><span class="fa fa-pencil"></span></a></td>
+                <td><a class="delete" id="${meal.id}"><span class="fa fa-remove"></span></a></td>
+<%--                <td><a href="meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>--%>
+<%--                <td><a href="meals/delete?id=${meal.id}"><spring:message code="common.delete"/></a></td>--%>
             </tr>
         </c:forEach>
     </table>
 </section>
+</div>
+
+<jsp:include page="mealForm.jsp"/>
+
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>
