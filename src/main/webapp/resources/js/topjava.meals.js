@@ -35,7 +35,9 @@ $(function () {
 });
 
 function clearFilter() {
-
+    $("#filter").trigger('reset');
+    dataFilter.length = 0;
+    updateTable();
 }
 
 function filterTable() {
