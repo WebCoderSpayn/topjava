@@ -14,27 +14,39 @@
 
 <div class="jumbotron">
 <section class="container">
-    <h3><spring:message code="meal.title"/></h3>
+    <h3 class="pb-4"><spring:message code="meal.title"/></h3>
 
-    <form method="get" action="meals/filter">
-        <dl>
-            <dt><spring:message code="meal.startDate"/>:</dt>
-            <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
-        </dl>
-        <dl>
-            <dt><spring:message code="meal.endDate"/>:</dt>
-            <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
-        </dl>
-        <dl>
-            <dt><spring:message code="meal.startTime"/>:</dt>
-            <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
-        </dl>
-        <dl>
-            <dt><spring:message code="meal.endTime"/>:</dt>
-            <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
-        </dl>
-        <button type="submit"><spring:message code="meal.filter"/></button>
-    </form>
+    <div class="card">
+        <div class="card-body">
+            <form class="row" id="filter" <%--method="get" action="meals/filter"--%>>
+                <div class="col-6">
+                    <dl>
+                        <dt><spring:message code="meal.startDate"/>:</dt>
+                        <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
+                    </dl>
+                    <dl>
+                        <dt><spring:message code="meal.endDate"/>:</dt>
+                        <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
+                    </dl>
+                </div>
+                <div class="col-6">
+                    <dl>
+                        <dt><spring:message code="meal.startTime"/>:</dt>
+                        <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
+                    </dl>
+                    <dl>
+                        <dt><spring:message code="meal.endTime"/>:</dt>
+                        <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
+                    </dl>
+                </div>
+<%--                <button type="submit"><spring:message code="meal.filter"/></button>--%>
+            </form>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button class="btn btn-danger mr-3" onclick="clearFilter()">Сбросить фильтр</button>
+            <button class="btn btn-success" onclick="filterTable()"><spring:message code="meal.filter"/></button>
+        </div>
+    </div>
 <%--    <hr>--%>
 <%--    <a href="meals/create"><spring:message code="meal.add"/></a>--%>
 <%--    <hr>--%>
@@ -67,7 +79,7 @@
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
                 <td><a><span class="fa fa-pencil"></span></a></td>
-                <td><a class="delete" id="${meal.id}"><span class="fa fa-remove"></span></a></td>
+                <td><a class="delete" onclick="deleteRow(${meal.id})" <%--id="${meal.id}"--%>><span class="fa fa-remove"></span></a></td>
 <%--                <td><a href="meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>--%>
 <%--                <td><a href="meals/delete?id=${meal.id}"><spring:message code="common.delete"/></a></td>--%>
             </tr>

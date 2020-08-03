@@ -32,4 +32,21 @@ $(function () {
             })
         }
     );
-})
+});
+
+function clearFilter() {
+
+}
+
+function filterTable() {
+    form = $("#filter");
+    $.ajax({
+        type: "GET",
+        url: context.ajaxUrl + "filter",
+        data: form.serialize()
+    }).done(function (result) {
+        dataFilter = result;
+        updateTable();
+        successNoty("found result: " + dataFilter.length);
+    });
+}
