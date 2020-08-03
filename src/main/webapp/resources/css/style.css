@@ -2,11 +2,15 @@ dl {
     background: none repeat scroll 0 0 #FAFAFA;
     margin: 8px 0;
     padding: 0;
+
+    display: inline-flex;
+    align-items: baseline;
 }
 
 dt {
     display: inline-block;
-    width: 170px;
+    width: 190px;
+    margin-right: 5px;
 }
 
 dd {
