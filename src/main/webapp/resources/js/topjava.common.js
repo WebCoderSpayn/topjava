@@ -34,10 +34,6 @@ function deleteRow(id) {
     }
 }
 
-function enable(id) {
-    successNoty("Profile update");
-}
-
 function updateTable() {
     if (dataFilter.length === 0) {
         $.get(context.ajaxUrl, function (data) {

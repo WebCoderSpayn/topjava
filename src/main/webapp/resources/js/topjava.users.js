@@ -40,3 +40,11 @@ $(function () {
         }
     );
 });
+
+function enable(element, id) {
+    let parent = $(element).parents("tr")[0];
+    $.post(context.ajaxUrl + id, "enable=" + element.checked).done(function () {
+        parent.setAttribute("data-enable", element.checked);
+        successNoty("Profile update");
+    });
+}
