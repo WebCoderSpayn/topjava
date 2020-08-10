@@ -34,6 +34,10 @@ public class MealTestData {
     }
 
     public static Meal getUpdated() {
-        return new Meal(MEAL1_ID, MEAL1.getDateTime(), "Обновленный завтрак", 200);
+        return new Meal(MEAL1_ID, MEAL1.getDateTime(), "Обновленный завтрак", 100);
+    }
+
+    public static Meal getUpdatedCaloriesNull() {
+        return new Meal(MEAL1_ID, MEAL1.getDateTime(), "Обновленный завтрак", 0);
     }
 }

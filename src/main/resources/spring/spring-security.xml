@@ -14,6 +14,12 @@
         <csrf disabled="true"/>
     </http>
 
+    <http pattern="/profile/**" use-expressions="true" name="profileSecurityFilterChain" create-session="stateless">
+        <http-basic/>
+        <intercept-url pattern="/profile/**" access="isAuthenticated()"/>
+        <csrf disabled="true"/>
+    </http>
+
     <beans:bean name="noopEncoder" class="org.springframework.security.crypto.password.NoOpPasswordEncoder"/>
 
     <http>

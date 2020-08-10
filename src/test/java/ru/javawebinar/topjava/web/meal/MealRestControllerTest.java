@@ -8,6 +8,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
@@ -18,11 +19,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
+import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.USER;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 import static ru.javawebinar.topjava.util.MealsUtil.createTo;
 import static ru.javawebinar.topjava.util.MealsUtil.getTos;
+import static ru.javawebinar.topjava.web.meal.MealUIController.PROFILE_URL;
 
 class MealRestControllerTest extends AbstractControllerTest {
 
@@ -33,7 +36,8 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID)
+                .with(userHttpBasic(USER)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -42,7 +46,8 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID))
+        perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID)
+                .with(userHttpBasic(USER)))
                 .andExpect(status().isNoContent());
         assertThrows(NotFoundException.class, () -> mealService.get(MEAL1_ID, USER_ID));
     }
@@ -51,16 +56,30 @@ class MealRestControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         Meal updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(USER))
                 .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
                 .andExpect(status().isNoContent());
 
         MEAL_MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), updated);
     }
 
     @Test
+    void updateMealCaloriesNull() throws Exception {
+        Meal updatedMeal = getUpdatedCaloriesNull();
+        perform(MockMvcRequestBuilders.post(PROFILE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(USER))
+                .content(JsonUtil.writeValue(updatedMeal)))
+                .andDo(print())
+                .andExpect(status().is(422));
+    }
+
+    @Test
     void createWithLocation() throws Exception {
         Meal newMeal = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(USER))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMeal)));
 
@@ -73,7 +92,8 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL))
+        perform(MockMvcRequestBuilders.get(REST_URL)
+                .with(userHttpBasic(USER)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
