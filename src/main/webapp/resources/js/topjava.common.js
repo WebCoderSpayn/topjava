@@ -44,6 +44,9 @@ function updateTableByData(data) {
 }
 
 function save() {
+    // let dateTime = form[0].dateTime.value;
+    // form[0].dateTime.value = dateTime.replace(' ', 'T');
+
     $.ajax({
         type: "POST",
         url: context.ajaxUrl,
