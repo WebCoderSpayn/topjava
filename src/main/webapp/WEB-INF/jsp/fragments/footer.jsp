@@ -6,3 +6,5 @@
         <span class="text-muted"><spring:message code="app.footer"/></span>
     </div>
 </footer>
+
+<link rel="stylesheet" href="webjars/datetimepicker/2.5.20-1/jquery.datetimepicker.css"/>
