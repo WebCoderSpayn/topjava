@@ -1,7 +1,20 @@
-var context, form;
+var ajaxUrl, datatableApi, updateTable, form;
 
-function makeEditable(ctx) {
-    context = ctx;
+function makeEditable(aUrl, datatableOpts, upTable) {
+    ajaxUrl = aUrl;
+    datatableApi = $("#datatable").DataTable(
+        // https://api.jquery.com/jquery.extend/#jQuery-extend-deep-target-object1-objectN
+        $.extend(true, datatableOpts,
+            {
+                "ajax": {
+                    "url": ajaxUrl,
+                    "dataSrc": ""
+                },
+                "paging": false,
+                "info": true
+            }
+        ));
+    updateTable = upTable;
     form = $('#detailsForm');
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);
@@ -9,6 +22,12 @@ function makeEditable(ctx) {
 
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
     $.ajaxSetup({cache: false});
+
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
 }
 
 function add() {
@@ -19,7 +38,7 @@ function add() {
 
 function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
-    $.get(context.ajaxUrl + id, function (data) {
+    $.get(ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(value);
         });
@@ -30,27 +49,27 @@ function updateRow(id) {
 function deleteRow(id) {
     if (confirm(i18n['common.confirm'])) {
         $.ajax({
-            url: context.ajaxUrl + id,
+            url: ajaxUrl + id,
             type: "DELETE"
         }).done(function () {
-            context.updateTable();
+            updateTable();
             successNoty("common.deleted");
         });
     }
 }
 
 function updateTableByData(data) {
-    context.datatableApi.clear().rows.add(data).draw();
+    datatableApi.clear().rows.add(data).draw();
 }
 
 function save() {
     $.ajax({
         type: "POST",
-        url: context.ajaxUrl,
+        url: ajaxUrl,
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
-        context.updateTable();
+        updateTable();
         successNoty("common.saved");
     });
 }
@@ -76,8 +95,9 @@ function successNoty(key) {
 
 function failNoty(jqXHR) {
     closeNoty();
+    var errorInfo = JSON.parse(jqXHR.responseText);
     failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status + (jqXHR.responseJSON ? "<br>" + jqXHR.responseJSON : ""),
+        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status + "<br>" + errorInfo.type + "<br>" + errorInfo.detail,
         type: "error",
         layout: "bottomRight"
     }).show();
