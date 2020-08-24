@@ -11,7 +11,10 @@ function makeEditable(aUrl, datatableOpts, upTable) {
                     "dataSrc": ""
                 },
                 "paging": false,
-                "info": true
+                "info": true,
+                "language": {
+                    "search": i18n["common.search"]
+                }
             }
         ));
     updateTable = upTable;
@@ -38,6 +41,7 @@ function add() {
 
 function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
+    form.find(":input").val("");
     $.get(ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(value);
@@ -97,7 +101,7 @@ function failNoty(jqXHR) {
     closeNoty();
     var errorInfo = JSON.parse(jqXHR.responseText);
     failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status + "<br>" + errorInfo.type + "<br>" + errorInfo.detail,
+        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.typeMessage + "<br>" + errorInfo.details.join("<br>"),
         type: "error",
         layout: "bottomRight"
     }).show();
